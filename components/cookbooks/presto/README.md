@@ -6,11 +6,11 @@ Requirements
 ------------
 Platform:
 
-* CentOS, Red Hat, Fedora (OpenJDK)
+* CentOS and Red Hat
 
 Dependencies:
 
-* java
+* Oracle JDK 1.8
 
 
 Attributes
