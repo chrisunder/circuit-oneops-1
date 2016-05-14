@@ -114,9 +114,9 @@ resource 'artifact',
                             'regex' => ''
                         },
                         :metrics => {
-                            'time' => metric(unit => 's', description => 'Response Time', dstype => 'GAUGE'),
-                            'up' => metric(unit => '', description => 'Status', dstype => 'GAUGE'),
-                            'size' => metric(unit => 'B', description => 'Content Size', dstype => 'GAUGE', display => false)
+                            'time' => metric(:unit => 's', :description => 'Response Time', :dstype => 'GAUGE'),
+                            'up' => metric(:unit => '', :description => 'Status', :dstype => 'GAUGE'),
+                            'size' => metric(:unit => 'B', :description => 'Content Size', :dstype => 'GAUGE', :display => false)
                         },
                         :thresholds => {
 
