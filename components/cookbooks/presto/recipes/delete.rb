@@ -1,15 +1,15 @@
-tomcat_pkgs = value_for_platform(
-  "default" => ["presto"]
+presto_pkgs = value_for_platform(
+  "default" => ["presto-server-rpm"]
 )
 
 
 service "presto" do
-  only_if { ::File.exists?('/etc/init.d/presto') }
+  only_if { ::File.exists?('/etc/presto/node.properties') }
   service_name "presto"
   action [:stop, :disable]
 end
 
-tomcat_pkgs.each do |pkg|
+presto_pkgs.each do |pkg|
   package pkg do
     action :purge
   end
