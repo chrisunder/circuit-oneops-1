@@ -21,3 +21,8 @@ directory "/etc/presto" do
   recursive true
   action :delete
 end
+
+directory node.presto.data_directory_dir do
+  recursive true
+  action :delete
+end
