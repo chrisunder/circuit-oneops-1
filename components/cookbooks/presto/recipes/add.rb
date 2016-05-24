@@ -1,5 +1,8 @@
 include_recipe "presto::delete"
 
+package 'mosh'
+package 'screen'
+
 include_recipe "presto::install_binary"
 
 template '/opt/nagios/libexec/check_presto.rb' do
