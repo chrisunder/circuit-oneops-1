@@ -6,6 +6,10 @@ type 'Platform'
 category 'Other'
 
 environment 'redundant', {}
+resource 'compute',
+         :cookbook => 'oneops.1.compute',
+         :design => true,
+         :attributes => {:size => 'XXL'}
 
 resource 'presto',
          :cookbook => 'oneops.1.presto',
