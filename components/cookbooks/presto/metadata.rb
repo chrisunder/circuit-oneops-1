@@ -33,45 +33,6 @@ attribute 'data_directory_dir',
               :order  => 2
           }
 
-attribute 'log_file',
-          :description => 'Data Directory',
-          :default => 'Location for logs',
-          :format => {
-              :help => 'Location for metadata and temporary data',
-              :category => '1.Global',
-              :order => 3
-          }
-
-attribute 'query_max_memory',
-          :description => 'Max Query Memory',
-          :default => '50GB',
-          :format => {
-              :help => 'The maximum amount of distributed memory that a query may use',
-              :category => '1.Global',
-              :order => 4
-          }
-
-attribute 'query_max_memory_per_node',
-          :description => 'Max Query Memory Per Node',
-          :default => '1GB',
-          :format => {
-              :help => 'The maximum amount of memory that a query may use on any one machine',
-              :category => '1.Global',
-              :order => 5
-          }
-
-attribute 'port',
-          :description => 'HTTP Port',
-          :required => 'required',
-          :default => '8080',
-          :format => {
-              :help => 'Port Presto cordinator listens on for incoming HTTP requests',
-              :category => '1.Global',
-              :order => 6,
-              :filter => { 'all' => { 'visible' => 'http_connector_enabled:eq:true' } },
-              :pattern => '[0-9]+'
-          }
-
 recipe 'status', 'Presto Status'
 recipe 'start', 'Start Presto'
 recipe 'stop', 'Stop Presto'
