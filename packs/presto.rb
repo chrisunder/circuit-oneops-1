@@ -5,6 +5,23 @@ description 'presto'
 type 'Platform'
 category 'Other'
 
+# security group aka firewall
+resource "secgroup",
+    :cookbook => "secgroup",
+    :design => true,
+    :attributes => {
+        "inbound" => '[
+            "22 22 tcp 0.0.0.0/0",
+            "1024 65535 tcp 0.0.0.0/0",
+            "60000 60010 udp 0.0.0.0/0",
+            "8080 8080 tcp 0.0.0.0/0"
+        ]'
+    },
+    :requires => {
+        :constraint => "1..1",
+        :services => "compute"
+    }
+
 resource 'compute',
          :cookbook => 'oneops.1.compute',
          :design => true,
@@ -98,18 +115,14 @@ resource 'build',
              'restart_command'   => ''
          }
 
-resource 'secgroup',
-         :cookbook => 'oneops.1.secgroup',
-         :design => true,
+resource "lb",
+         :except => [ 'single' ],
+         :design => false,
+         :cookbook => "oneops.1.lb",
+         :requires => { "constraint" => "1..1", "services" => "lb,dns,*mirror" },
          :attributes => {
-             'inbound' => '[ "22 22 tcp 0.0.0.0/0",
-                            "8080 8080 tcp 0.0.0.0/0",
-                            "-1 -1 icmp 0.0.0.0/0",
-                            "60000 61000 udp 0.0.0.0/0" ]'
-         },
-         :requires => {
-             :constraint => '1..1',
-             :services => 'compute'
+             'ecv_map' => '{"8080":"GET /v1/info/coordinator"}',
+             'listeners' => '[ "http 8080 http 8080" ]'
          }
 
 resource 'java',
