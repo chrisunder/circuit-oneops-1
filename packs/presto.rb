@@ -67,6 +67,10 @@ resource 'presto',
                             } }
          }
 
+resource 'presto_coordinator',
+      :cookbook => 'oneops.1.presto_coordinator',
+      :design => true
+
 resource 'artifact',
          :cookbook => 'oneops.1.artifact',
          :design => true,
@@ -138,8 +142,8 @@ resource 'java',
          }
 
 # depends_on
-[{ :from => 'presto', :to => 'user' },
- { :from => 'presto', :to => 'java' },
+[{ :from => 'presto',     :to => 'java' },
+ { :from => 'presto',     :to => 'user' },
  { :from => 'artifact',   :to => 'library' },
  { :from => 'artifact',   :to => 'presto'  },
  { :from => 'artifact',   :to => 'download' },
@@ -149,6 +153,8 @@ resource 'java',
  { :from => 'build',      :to => 'presto'  },
  { :from => 'build',      :to => 'download' },
  { :from => 'java',       :to => 'compute' },
+ { :from => 'presto_coordinator', :to => 'fqdn' },
+ { :from => 'presto_coordinator', :to => 'presto' },
  { :from => 'java',       :to => 'os' },
  { :from => 'java',       :to => 'download' }].each do |link|
     relation "#{link[:from]}::depends_on::#{link[:to]}",
@@ -158,8 +164,17 @@ resource 'java',
              :attributes => { 'flex' => false, 'min' => 1, 'max' => 1 }
 end
 
+[{ :from => 'presto_coordinator', :to => 'fqdn' }].each do |link|
+    relation "#{link[:from]}::depends_on_converge::#{link[:to]}",
+             :except => ['_default', 'single'],
+             :relation_name => 'DependsOn',
+             :from_resource => link[:from],
+             :to_resource => link[:to],
+             :attributes => { 'flex' => false, "converge" => true, 'min' => 1, 'max' => 1 }
+end
+
 # managed_via
-['presto', 'build', 'artifact', 'java', ].each do |from|
+['presto', 'build', 'artifact', 'java', 'presto_coordinator' ].each do |from|
     relation "#{from}::managed_via::compute",
              :except => ['_default'],
              :relation_name => 'ManagedVia',

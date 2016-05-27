@@ -14,8 +14,14 @@ template '/opt/nagios/libexec/check_presto.rb' do
     mode '0755'
 end
 
-
 directory node.presto.data_directory_dir do
+  owner 'presto'
+  group 'presto'
+  mode  '0755'
+  recursive true
+end
+
+directory '/usr/lib/presto/var' do
   owner 'presto'
   group 'presto'
   mode  '0755'
