@@ -1,7 +1,7 @@
 include_pack 'genericlb'
 
 name 'presto'
-description 'presto'
+description 'Presto'
 type 'Platform'
 category 'Other'
 
