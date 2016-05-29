@@ -35,7 +35,6 @@ resource 'presto',
              :services => 'mirror'
          },
          :attributes => {
-             'install_type' => 'binary'
          },
          :monitors => {
              'HttpValue' => { :description => 'HttpValue',
