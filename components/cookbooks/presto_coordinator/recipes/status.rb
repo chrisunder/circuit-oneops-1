@@ -44,8 +44,16 @@ file ssh_key_file do
   mode 0600
 end
 
-
-cmd = Mixlib::ShellOut.new("sudo ssh -i #{ssh_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null oneops@#{coordinator_ip} cat /etc/presto/config.properties")
-cmd.run_command
 Chef::Log.info("Coordinator IP: #{coordinator_ip}")
-Chef::Log.info("Execution completed\n#{cmd.format_for_exception}")
+Chef::Log.info("Checking Config")
+ruby_block "update_master_location" do
+    block do
+        `sudo ssh -i #{ssh_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null #{prestoPeerIp} cat /etc/presto/config.properties`
+    end
+end
+
+file ssh_key_file do
+  action :delete
+end
+
+Chef::Log.info("Execution completed")
