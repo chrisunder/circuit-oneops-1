@@ -52,33 +52,55 @@ else
     exit 1
 end
 
-coordinator = node.ipaddress == coordinator_ip
+# tmp file to store private key
+fuuid = (0..32).to_a.map{|a| rand(32).to_s(32)}.join
+presto_cache_path = '/tmp/presto'
 
-directory '/etc/presto' do
+directory presto_cache_path do
   owner 'presto'
   group 'presto'
   mode  '0755'
-  recursive true
 end
 
-template '/etc/presto/config.properties' do
-    source 'config.properties.erb'
-    owner 'presto'
-    group 'presto'
-    mode '0755'
-    variables ({
-        :coordinator => coordinator,
-        :port => '8080',
-        :query_max_memory => node.presto_coordinator.query_max_memory,
-        :query_max_memory_per_node => node.presto_coordinator.query_max_memory_per_node,
-        :coordinator_fqdn => coordinator_fqdn
-    })
+ssh_key_file = presto_cache_path + "/" + fuuid
+file ssh_key_file do
+  content node.workorder.payLoad[:SecuredBy][0][:ciAttributes][:private]
+  mode 0600
 end
 
-ruby_block 'Restart presto service' do
-    block do
-        Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-        shell_out!('service presto restart',
-                   live_stream: Chef::Log.logger)
+presto_peers.each do |prestoPeer|
+    prestoPeerIp = prestoPeer[0]
+    coordinator = prestoPeer[0] == coordinator_ip
+
+    template '/tmp/presto/config.properties' do
+        source 'config.properties.erb'
+        owner 'presto'
+        group 'presto'
+        mode '0755'
+        variables ({
+            :coordinator => coordinator,
+            :port => '8080',
+            :query_max_memory => node.presto_coordinator.query_max_memory,
+            :query_max_memory_per_node => node.presto_coordinator.query_max_memory_per_node,
+            :coordinator_fqdn => coordinator_fqdn
+        })
     end
+
+    Chef::Log.info("Updating config of #{prestoPeerIp}")
+    ruby_block "update_master_location" do
+        block do
+            `sudo scp -i #{ssh_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null #{presto_cache_path}/config.properties #{prestoPeerIp}:/etc/presto/config.properties`
+            `sudo ssh -i #{ssh_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null oneops@#{prestoPeerIp} sudo service restart presto`
+        end
+    end
+end
+
+# Clean up the SSH key file for non-debug environments
+if node.workorder.payLoad.Environment[0].ciAttributes.debug != 'true'
+  file ssh_key_file do
+    action :delete
+  end
+  file '/tmp/config.properties' do
+    action :delete
+  end
 end
