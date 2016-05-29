@@ -68,7 +68,10 @@ resource 'presto',
 
 resource 'presto_coordinator',
       :cookbook => 'oneops.1.presto_coordinator',
-      :design => true
+      :design => true,
+      :requires => {
+          :constraint => '1..1',
+      }
 
 resource 'artifact',
          :cookbook => 'oneops.1.artifact',
