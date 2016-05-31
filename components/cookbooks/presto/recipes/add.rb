@@ -1,4 +1,3 @@
-require 'securerandom'
 
 include_recipe "presto::delete"
 
