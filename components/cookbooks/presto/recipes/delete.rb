@@ -26,3 +26,8 @@ directory node.presto.data_directory_dir do
   recursive true
   action :delete
 end
+
+directory "/usr/lib/presto/var" do
+  recursive true
+  action :delete
+end
