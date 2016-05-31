@@ -69,9 +69,12 @@ resource 'presto',
 resource 'presto_coordinator',
       :cookbook => 'oneops.1.presto_coordinator',
       :design => true,
-      :requires => {
-          :constraint => '1..1',
-      }
+      :requires => { 'constraint' => '1..1' }
+
+resource 'presto_mysql',
+       :cookbook => 'oneops.1.presto_mysql',
+       :design => true,
+       :requires => { 'constraint' => '0..*' }
 
 resource 'artifact',
          :cookbook => 'oneops.1.artifact',
@@ -157,6 +160,7 @@ resource 'java',
  { :from => 'java',       :to => 'compute' },
  { :from => 'presto_coordinator', :to => 'fqdn' },
  { :from => 'presto_coordinator', :to => 'presto' },
+ { :from => 'presto_mysql', :to => 'presto' },
  { :from => 'java',       :to => 'os' },
  { :from => 'java',       :to => 'download' }].each do |link|
     relation "#{link[:from]}::depends_on::#{link[:to]}",
@@ -176,7 +180,7 @@ end
 end
 
 # managed_via
-['presto', 'build', 'artifact', 'java', 'presto_coordinator' ].each do |from|
+['presto', 'build', 'artifact', 'java', 'presto_coordinator', 'presto_mysql' ].each do |from|
     relation "#{from}::managed_via::compute",
              :except => ['_default'],
              :relation_name => 'ManagedVia',

@@ -5,3 +5,23 @@ discovery-server.enabled=true
 query.max-memory=<%= @query_max_memory %>
 query.max-memory-per-node=<%= @query_max_memory_per_node %>
 discovery.uri=http://<%= @coordinator_fqdn %>:<%= @port %>
+plugin.bundles=\
+    /usr/lib/presto/lib/plugin/atop,\
+    /usr/lib/presto/lib/plugin/blackhole,\
+    /usr/lib/presto/lib/plugin/cassandra,\
+    /usr/lib/presto/lib/plugin/example-http,\
+    /usr/lib/presto/lib/plugin/hive-cdh4,\
+    /usr/lib/presto/lib/plugin/hive-cdh5,\
+    /usr/lib/presto/lib/plugin/hive-hadoop1,\
+    /usr/lib/presto/lib/plugin/hive-hadoop2,\
+    /usr/lib/presto/lib/plugin/jmx,\
+    /usr/lib/presto/lib/plugin/kafka,\
+    /usr/lib/presto/lib/plugin/localfile,\
+    /usr/lib/presto/lib/plugin/ml,\
+    /usr/lib/presto/lib/plugin/mongodb,\
+    /usr/lib/presto/lib/plugin/mysql,\
+    /usr/lib/presto/lib/plugin/postgresql,\
+    /usr/lib/presto/lib/plugin/raptor,\
+    /usr/lib/presto/lib/plugin/redis,\
+    /usr/lib/presto/lib/plugin/teradata-functions,\
+    /usr/lib/presto/lib/plugin/tpch
