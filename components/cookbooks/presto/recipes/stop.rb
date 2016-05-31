@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: tomcat
+# Cookbook Name:: presto
 # Recipe:: stop
 
 ruby_block 'Stop presto service' do
