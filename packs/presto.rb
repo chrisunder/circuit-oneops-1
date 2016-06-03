@@ -1,9 +1,90 @@
-include_pack 'genericlb'
+include_pack 'base'
 
 name 'presto'
 description 'Presto'
 type 'Platform'
 category 'Other'
+
+#entrypoint "presto_coordinator"
+
+# BEGIN of copied from genericlb
+
+resource "lb",
+  :except => [ 'single' ],
+  :design => false,
+  :cookbook => "oneops.1.lb",
+  :requires => { "constraint" => "1..1", "services" => "compute,lb,dns" },
+  :attributes => {
+    "stickiness"    => ""
+  },
+  :payloads => {
+  'primaryactiveclouds' => {
+      'description' => 'primaryactiveclouds',
+      'definition' => '{
+         "returnObject": false,
+         "returnRelation": false,
+         "relationName": "base.RealizedAs",
+         "direction": "to",
+         "targetClassName": "manifest.Lb",
+         "relations": [
+           { "returnObject": false,
+             "returnRelation": false,
+             "relationName": "manifest.Requires",
+             "direction": "to",
+             "targetClassName": "manifest.Platform",
+             "relations": [
+               { "returnObject": false,
+                 "returnRelation": false,
+                 "relationAttrs":[{"attributeName":"priority", "condition":"eq", "avalue":"1"},
+                                  {"attributeName":"adminstatus", "condition":"neq", "avalue":"offline"}],
+                 "relationName": "base.Consumes",
+                 "direction": "from",
+                 "targetClassName": "account.Cloud",
+                 "relations": [
+                   { "returnObject": true,
+                     "returnRelation": false,
+                     "relationAttrs":[{"attributeName":"service", "condition":"eq", "avalue":"lb"}],
+                     "relationName": "base.Provides",
+                     "direction": "from",
+                     "targetClassName": "cloud.service.Netscaler"
+                   }
+                 ]
+               }
+             ]
+           }
+         ]
+      }'
+    }
+  }
+
+
+resource "lb-certificate",
+  :cookbook => "oneops.1.certificate",
+  :design => true,
+  :requires => { "constraint" => "0..1" },
+  :attributes => {}
+
+
+[ 'lb' ].each do |from|
+  relation "#{from}::depends_on::lb-certificate",
+    :except => [ '_default', 'single' ],
+    :relation_name => 'DependsOn',
+    :from_resource => from,
+    :to_resource => 'lb-certificate',
+    :attributes => { "propagate_to" => 'from', "flex" => false, "min" => 0, "max" => 1 }
+end
+
+
+[ 'fqdn' ].each do |from|
+  relation "#{from}::depends_on::lb",
+    :except => [ '_default', 'single' ],
+    :relation_name => 'DependsOn',
+    :from_resource => from,
+    :to_resource   => 'lb',
+    :attributes    => { "propagate_to" => 'to', "flex" => false, "min" => 1, "max" => 1 }
+end
+
+# END of copied from genericlb
 
 # security group aka firewall
 resource "secgroup",
@@ -146,6 +227,24 @@ resource 'java',
              'flavor' => 'oracle'
          }
 
+#[ 'presto' ].each do |to|
+#  relation "lb::depends_on::#{to}",
+#    :except => [ '_default', 'single' ],
+#    :relation_name => 'DependsOn',
+#    :from_resource => 'lb',
+#    :to_resource   => to,
+#    :attributes    => { "propagate_to" => 'both', "flex" => true, "current" =>2, "min" => 2, "max" => 10}
+#end
+
+[ 'compute' ].each do |to|
+  relation "lb::depends_on::#{to}",
+    :except => [ '_default', 'single' ],
+    :relation_name => 'DependsOn',
+    :from_resource => 'lb',
+    :to_resource   => to,
+    :attributes    => { "propagate_to" => 'both', "flex" => true, "current" =>2, "min" => 2, "max" => 10}
+end
+
 # depends_on
 [{ :from => 'presto',     :to => 'java' },
  { :from => 'presto',     :to => 'user' },
@@ -158,7 +257,7 @@ resource 'java',
  { :from => 'build',      :to => 'presto'  },
  { :from => 'build',      :to => 'download' },
  { :from => 'presto_coordinator', :to => 'fqdn' },
- { :from => 'presto_coordinator', :to => 'presto' },
+ #{ :from => 'presto_coordinator', :to => 'presto' },
  { :from => 'presto_mysql', :to => 'presto' },
  { :from => 'java',       :to => 'os' },
  { :from => 'java',       :to => 'download' }].each do |link|

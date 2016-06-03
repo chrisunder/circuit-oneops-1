@@ -7,9 +7,10 @@
 # Apache License, Version 2.0
 #
 
-# more than one coordinator instance may run at a time sleep for a time to
-# prevent collisions
-secondsToSleep=Random.new.rand(120)
+# sleeping to prevent coordinator from running at the same time as the
+# main install
+#secondsToSleep=Random.new.rand(120)
+secondsToSleep=120
 Chef::Log.info("Sleeping #{secondsToSleep}")
 sleep (secondsToSleep)
 
