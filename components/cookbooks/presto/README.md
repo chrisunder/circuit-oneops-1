@@ -16,7 +16,7 @@ Dependencies:
 Attributes
 ----------
 * `version` - Version number of Presto to install.  For example: 0.148.SNAPSHOT-1.x86_64
-* `data_directory_dir` - Location for metadata and temporary data, default `/mnt/presto/data`.
+* `data_directory_dir` - Location for metadata and temporary data, default `/mnt/presto/data`. This value can not be changed after a deploy.
 
 License and Authors
 -------------------
