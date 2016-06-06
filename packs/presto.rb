@@ -108,6 +108,18 @@ resource 'compute',
          :design => true,
          :attributes => {:size => 'XXL'}
 
+resource 'user-presto',
+         :cookbook => 'oneops.1.user',
+         :design => true,
+         :requires => {'constraint' => "1..1"},
+         :attributes => {
+              :username => 'presto',
+              :description => 'Presto user id',
+              :home_directory => '/home/presto',
+              :system_account => true,
+              :sudoer => true
+         }
+
 resource 'presto',
          :cookbook => 'oneops.1.presto',
          :design => true,
@@ -248,6 +260,7 @@ end
 # depends_on
 [{ :from => 'presto',     :to => 'java' },
  { :from => 'presto',     :to => 'user' },
+ { :from => 'presto',     :to => 'user-presto' },
  { :from => 'artifact',   :to => 'library' },
  { :from => 'artifact',   :to => 'presto'  },
  { :from => 'artifact',   :to => 'download' },
@@ -260,6 +273,7 @@ end
  #{ :from => 'presto_coordinator', :to => 'presto' },
  { :from => 'presto_mysql', :to => 'presto' },
  { :from => 'java',       :to => 'os' },
+ { :from => 'user-presto',       :to => 'os' },
  { :from => 'java',       :to => 'download' }].each do |link|
     relation "#{link[:from]}::depends_on::#{link[:to]}",
              :relation_name => 'DependsOn',
@@ -278,7 +292,7 @@ end
 end
 
 # managed_via
-['presto', 'build', 'artifact', 'java', 'presto_coordinator', 'presto_mysql' ].each do |from|
+['presto', 'build', 'artifact', 'user-presto', 'java', 'presto_coordinator', 'presto_mysql' ].each do |from|
     relation "#{from}::managed_via::compute",
              :except => ['_default'],
              :relation_name => 'ManagedVia',
