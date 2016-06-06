@@ -169,6 +169,11 @@ resource 'presto_mysql',
        :design => true,
        :requires => { 'constraint' => '0..*' }
 
+resource 'presto_cassandra',
+      :cookbook => 'oneops.1.presto_cassandra',
+      :design => true,
+      :requires => { 'constraint' => '0..*' }
+
 resource 'artifact',
          :cookbook => 'oneops.1.artifact',
          :design => true,
@@ -272,6 +277,7 @@ end
  { :from => 'presto_coordinator', :to => 'fqdn' },
  #{ :from => 'presto_coordinator', :to => 'presto' },
  { :from => 'presto_mysql', :to => 'presto' },
+ { :from => 'presto_cassandra', :to => 'presto' },
  { :from => 'java',       :to => 'os' },
  { :from => 'user-presto',       :to => 'os' },
  { :from => 'java',       :to => 'download' }].each do |link|
@@ -292,7 +298,7 @@ end
 end
 
 # managed_via
-['presto', 'build', 'artifact', 'user-presto', 'java', 'presto_coordinator', 'presto_mysql' ].each do |from|
+['presto', 'build', 'artifact', 'user-presto', 'java', 'presto_coordinator', 'presto_mysql', 'presto_cassandra' ].each do |from|
     relation "#{from}::managed_via::compute",
              :except => ['_default'],
              :relation_name => 'ManagedVia',
