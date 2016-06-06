@@ -1,7 +1,23 @@
+#
+# Cookbook Name:: presto
+# Recipe:: install
+#
+# Copyright 2016, Walmart Labs
+#
+# Apache License, Version 2.0
+#
+
+
+# Replace any $version placeholder variables present in the URL
+# e.x: http://<mirror>/some/path/$version.rpm
+install_url = node.presto.presto_rpm_install_url.gsub('$version', node.presto.version)
+
+Chef::Log.info("Installing Presto with #{install_url}")
+
 ruby_block 'Install Presto RPM' do
     block do
         Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-        system("yum install -y 'http://cdc-rgw.ost.cloud.wal-mart.com/swift/v1/com-walmart-bfd-public-installs/presto/presto-server-rpm-#{node.presto.version}.rpm'")
+        system("yum install -y '#{install_url}'")
     end
 end
 

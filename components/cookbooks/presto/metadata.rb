@@ -33,6 +33,15 @@ attribute 'data_directory_dir',
               :order  => 2
           }
 
+attribute 'presto_rpm_install_url',
+        :description  => 'Presto Install URL',
+        :default  => 'http://cdc-rgw.ost.cloud.wal-mart.com/swift/v1/com-walmart-bfd-public-installs/presto/presto-server-rpm-$version.rpm',
+        :format  => {
+            :help  => 'Presto Install URL. $version will be replaceed with the version of presto',
+            :category  => '1.Global',
+            :order  => 3
+        }
+
 recipe 'status', 'Presto Status'
 recipe 'start', 'Start Presto'
 recipe 'stop', 'Stop Presto'
