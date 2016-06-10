@@ -31,14 +31,10 @@ coordinator_ip = presto_peers[0][0]
 
 Chef::Log.info("Coordinator IP will be #{coordinator_ip} with node ip of #{node.ipaddress}")
 
-Chef::Log.info("node.workorder.payLoad.DependsOn: #{node.workorder.payLoad.DependsOn}")
+coordinator_fqdn_payload = node.workorder.payLoad["prestofqdn"]
 
-depends_on=node.workorder.payLoad.DependsOn.reject{ |d| d['ciClassName'] != 'bom.oneops.1.Fqdn' }
-Chef::Log.info("depends_on: #{depends_on}")
-if (!depends_on.nil? && !depends_on.empty? )
-    chosen = depends_on.first
-    Chef::Log.info("chosen: #{chosen}")
-    coordinator_fqdns = JSON.parse(chosen[:ciAttributes][:entries])
+if (!coordinator_fqdn_payload.nil? )
+    coordinator_fqdns = JSON.parse(coordinator_fqdn_payload[0][:ciAttributes][:entries])
     Chef::Log.info("coordinator_fqdns: #{coordinator_fqdns}")
     if (!coordinator_fqdns.nil? && !coordinator_fqdns.empty? )
         coordinator_fqdn = coordinator_fqdns.keys[1]
@@ -48,59 +44,29 @@ if (!depends_on.nil? && !depends_on.empty? )
         exit 1
     end
 else
-    Chef::Log.error("Unable to find FQDN of the load balancer")
+    Chef::Log.error("Unable to find a valid FQDN payload")
     exit 1
 end
 
-# tmp file to store private key
-fuuid = (0..32).to_a.map{|a| rand(32).to_s(32)}.join
-presto_cache_path = '/tmp/presto'
+coordinator = node.ipaddress == coordinator_ip
 
-directory presto_cache_path do
-  owner 'presto'
-  group 'presto'
-  mode  '0755'
+template '/etc/presto/config.properties' do
+    source 'config.properties.erb'
+    owner 'presto'
+    group 'presto'
+    mode '0755'
+    variables ({
+        :coordinator => coordinator,
+        :port => '8080',
+        :query_max_memory => node.presto_coordinator.query_max_memory,
+        :query_max_memory_per_node => node.presto_coordinator.query_max_memory_per_node,
+        :coordinator_fqdn => coordinator_fqdn
+    })
 end
 
-ssh_key_file = presto_cache_path + "/" + fuuid
-file ssh_key_file do
-  content node.workorder.payLoad[:SecuredBy][0][:ciAttributes][:private]
-  mode 0600
-end
-
-presto_peers.each do |prestoPeer|
-    prestoPeerIp = prestoPeer[0]
-    coordinator = prestoPeer[0] == coordinator_ip
-
-    template '/tmp/presto/config.properties' do
-        source 'config.properties.erb'
-        owner 'presto'
-        group 'presto'
-        mode '0755'
-        variables ({
-            :coordinator => coordinator,
-            :port => '8080',
-            :query_max_memory => node.presto_coordinator.query_max_memory,
-            :query_max_memory_per_node => node.presto_coordinator.query_max_memory_per_node,
-            :coordinator_fqdn => coordinator_fqdn
-        })
+ruby_block 'Restart presto service' do
+    block do
+        Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+        shell_out!('service presto restart',
+                   live_stream: Chef::Log.logger)
     end
-
-    Chef::Log.info("Updating config of #{prestoPeerIp}")
-    ruby_block "update_master_location" do
-        block do
-            `sudo scp -i #{ssh_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null #{presto_cache_path}/config.properties #{prestoPeerIp}:/etc/presto/config.properties`
-            `sudo ssh -i #{ssh_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null oneops@#{prestoPeerIp} sudo service restart presto`
-        end
-    end
-end
-
-# Clean up the SSH key file for non-debug environments
-if node.workorder.payLoad.Environment[0].ciAttributes.debug != 'true'
-  file ssh_key_file do
-    action :delete
-  end
-  file '/tmp/config.properties' do
-    action :delete
-  end
-end
