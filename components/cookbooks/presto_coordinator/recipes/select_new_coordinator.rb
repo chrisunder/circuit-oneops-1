@@ -70,3 +70,4 @@ ruby_block 'Restart presto service' do
         shell_out!('service presto restart',
                    live_stream: Chef::Log.logger)
     end
+end
