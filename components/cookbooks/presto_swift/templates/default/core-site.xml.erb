@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); you
+    may not use this file except in compliance with the License. You may obtain
+    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
+    required by applicable law or agreed to in writing, software distributed
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+    OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+    the specific language governing permissions and limitations under the License.
+    See accompanying LICENSE file. -->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+        <name>fs.swift.impl</name>
+        <value>org.apache.hadoop.fs.swift.snative.SwiftNativeFileSystem
+        </value>
+    </property>
+
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value><%= node.presto_swift.swift_tmp_dir %></value>
+    </property>
+
+    <!-- strati is the provider name, so you can change to any name, and also you can add more than one provider here -->
+    <property>
+        <name>fs.swift.service.strati.auth.url</name>
+        <value><%= node.presto_swift.swift_url %>
+        </value>
+    </property>
+
+    <property>
+        <name>fs.swift.service.strati.auth.endpoint.prefix</name>
+        <value>/object_endpoint/</value>
+    </property>
+
+    <!-- User name -->
+    <property>
+        <name>fs.swift.service.strati.username</name>
+        <value><%= node.presto_swift.swift_username %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.service.strati.password</name>
+        <value><%= node.presto_swift.swift_password %></value>
+    </property>
+
+    <!-- If public endpoint -->
+    <property>
+        <name>fs.swift.service.strati.public</name>
+        <value>false</value>
+    </property>
+
+    <property>
+        <name>fs.swift.service.strati.region</name>
+        <value>regionOne</value>
+    </property>
+
+    <property>
+        <name>fs.swift.service.strati.tenant</name>
+        <value><%= node.presto_swift.swift_tenant %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.block_size</name>
+        <value><%= node.presto_swift.swift_block_size %></value>
+    </property>
+
+    <property>
+        <name>mapred.min.split.size</name>
+        <value><%= node.presto_swift.swift_min_split_size %></value>
+    </property>
+
+    <property>
+        <name>mapred.max.split.size</name>
+        <value><%= node.presto_swift.swift_max_split_size %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.requestsize</name>
+        <value><%= node.presto_swift.swift_request_size %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.connect.timeout</name>
+        <value><%= node.presto_swift.swift_connect_timeout %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.socket.timeout</name>
+        <value><%= node.presto_swift.swift_socket_timeout %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.connect.retry.count</name>
+        <value><%= node.presto_swift.swift_connect_retry_count %></value>
+    </property>
+
+    <property>
+        <name>fs.swift.connect.throttle.delay</name>
+        <value><%= node.presto_swift.swift_throttle_delay %></value>
+    </property>
+
+</configuration>

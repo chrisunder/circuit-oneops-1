@@ -24,7 +24,7 @@ attribute 'query_max_memory',
 
 attribute 'query_max_memory_per_node',
           :description => 'Max Query Memory Per Node',
-          :default => '1GB',
+          :default => '2GB',
           :format => {
               :help => 'The maximum amount of memory that a query may use on any one machine',
               :category => '1.Global',

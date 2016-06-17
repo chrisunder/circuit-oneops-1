@@ -5,6 +5,7 @@ discovery-server.enabled=true
 query.max-memory=<%= @query_max_memory %>
 query.max-memory-per-node=<%= @query_max_memory_per_node %>
 discovery.uri=http://<%= @coordinator_fqdn %>:<%= @port %>
+event.http-client.keep-alive-interval=5s
 plugin.bundles=\
     /usr/lib/presto/lib/plugin/atop,\
     /usr/lib/presto/lib/plugin/blackhole,\
