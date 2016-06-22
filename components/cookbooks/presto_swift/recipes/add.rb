@@ -39,6 +39,10 @@ nexus_url = fix_nexus_url(nexus_url)
 
 hadoop_openstack_url = nexus_url + "/service/local/artifact/maven/redirect?g=org.apache.hadoop&a=hadoop-openstack&v=#{node.presto_swift.hadoop_openstack_version}&r=#{node.presto_swift.nexus_hadoop_openstack_repo}"
 httpclient_commons_url = nexus_url + "/service/local/artifact/maven/redirect?g=commons-httpclient&a=commons-httpclient&v=#{node.presto_swift.commons_httpclient_version}&r=#{node.presto_swift.nexus_central_repo}"
+jackson_core_asl_url = nexus_url + "/service/local/artifact/maven/redirect?g=org.codehaus.jackson&a=jackson-core-asl&v=#{node.presto_swift.commons_jackson_version}&r=#{node.presto_swift.nexus_central_repo}"
+jackson_jaxrs_url = nexus_url + "/service/local/artifact/maven/redirect?g=org.codehaus.jackson&a=jackson-jaxrs&v=#{node.presto_swift.commons_jackson_version}&r=#{node.presto_swift.nexus_central_repo}"
+jackson_xc_url = nexus_url + "/service/local/artifact/maven/redirect?g=org.codehaus.jackson&a=jackson-xc&v=#{node.presto_swift.commons_jackson_version}&r=#{node.presto_swift.nexus_central_repo}"
+jackson_mapper_asl_url = nexus_url + "/service/local/artifact/maven/redirect?g=org.codehaus.jackson&a=jackson-mapper-asl&v=#{node.presto_swift.commons_jackson_version}&r=#{node.presto_swift.nexus_central_repo}"
 
 Chef::Log.info("Hadoop Openstack URL #{hadoop_openstack_url}")
 
@@ -73,6 +77,38 @@ end
 
 remote_file "/usr/lib/presto/lib/plugin/hive-hadoop2/commons-httpclient-#{node.presto_swift.commons_httpclient_version}.jar" do
     source httpclient_commons_url
+    mode '0644'
+    owner 'root'
+    group 'root'
+    action :create
+end
+
+remote_file "/usr/lib/presto/lib/plugin/hive-hadoop2/jackson-core-asl-#{node.presto_swift.commons_jackson_version}.jar" do
+    source jackson_core_asl_url
+    mode '0644'
+    owner 'root'
+    group 'root'
+    action :create
+end
+
+remote_file "/usr/lib/presto/lib/plugin/hive-hadoop2/jackson-jaxrs-#{node.presto_swift.commons_jackson_version}.jar" do
+    source jackson_jaxrs_url
+    mode '0644'
+    owner 'root'
+    group 'root'
+    action :create
+end
+
+remote_file "/usr/lib/presto/lib/plugin/hive-hadoop2/jackson-xc-#{node.presto_swift.commons_jackson_version}.jar" do
+    source jackson_xc_url
+    mode '0644'
+    owner 'root'
+    group 'root'
+    action :create
+end
+
+remote_file "/usr/lib/presto/lib/plugin/hive-hadoop2/jackson-mapper-asl-#{node.presto_swift.commons_jackson_version}.jar" do
+    source jackson_mapper_asl_url
     mode '0644'
     owner 'root'
     group 'root'

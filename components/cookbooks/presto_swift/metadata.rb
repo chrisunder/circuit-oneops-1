@@ -73,6 +73,16 @@ attribute 'commons_httpclient_version',
             :order => 6
         }
 
+attribute 'commons_jackson_version',
+          :description => 'Jackson Version',
+          :required => 'required',
+          :default => '1.9.13',
+          :format => {
+            :category => '1.Global',
+            :help => 'The version of the Jackson Jar',
+            :order => 7
+        }
+
 # attribute to be removed once the hadoop client component is ready
 attribute 'swift_url',
           :description => "Keystone authenticaiton hostname",
@@ -81,7 +91,7 @@ attribute 'swift_url',
           :format => {
               :category => '1.Global',
               :help => 'Full url used to access swift',
-              :order => 7
+              :order => 8
           }
 
 attribute 'swift_username',
@@ -91,7 +101,7 @@ attribute 'swift_username',
           :format => {
               :category => '1.Global',
               :help => 'Username to connect to swift service',
-              :order => 8
+              :order => 9
           }
 
 attribute 'swift_password',
@@ -102,7 +112,7 @@ attribute 'swift_password',
           :format => {
               :category => '1.Global',
               :help => 'Password to connect to swift service',
-              :order => 9
+              :order => 10
          }
 
 attribute 'swift_tenant',
@@ -112,7 +122,7 @@ attribute 'swift_tenant',
           :format => {
               :category => '1.Global',
               :help => 'Tenant to use for swift',
-              :order => 10
+              :order => 11
          }
 
 attribute 'swift_tmp_dir',
@@ -121,7 +131,7 @@ attribute 'swift_tmp_dir',
           :default => "/tmp",
           :format => {
               :category => '1.Global',
-              :order => 11
+              :order => 12
           }
 
 attribute 'swift_block_size',
@@ -130,7 +140,7 @@ attribute 'swift_block_size',
           :default => "131072",
           :format => {
               :category => '1.Global',
-              :order => 12
+              :order => 13
         }
 
 attribute 'swift_min_split_size',
@@ -139,7 +149,7 @@ attribute 'swift_min_split_size',
           :default => "131072",
           :format => {
               :category => '1.Global',
-              :order => 13
+              :order => 14
         }
 
 attribute 'swift_max_split_size',
@@ -148,7 +158,7 @@ attribute 'swift_max_split_size',
           :default => "1048576",
           :format => {
               :category => '1.Global',
-              :order => 14
+              :order => 15
         }
 
 attribute 'swift_request_size',
@@ -157,7 +167,7 @@ attribute 'swift_request_size',
           :default => "1024",
           :format => {
               :category => '1.Global',
-              :order => 15
+              :order => 16
         }
 
 attribute 'swift_connect_timeout',
@@ -166,7 +176,7 @@ attribute 'swift_connect_timeout',
           :default => "30000",
           :format => {
               :category => '1.Global',
-              :order => 16
+              :order => 17
         }
 
 attribute 'swift_socket_timeout',
@@ -175,7 +185,7 @@ attribute 'swift_socket_timeout',
           :default => "120000",
           :format => {
               :category => '1.Global',
-              :order => 17
+              :order => 18
         }
 
 attribute 'swift_connect_retry_count',
@@ -184,7 +194,7 @@ attribute 'swift_connect_retry_count',
           :default => "3",
           :format => {
               :category => '1.Global',
-              :order => 18
+              :order => 19
         }
 
 attribute 'swift_throttle_delay',
@@ -193,5 +203,5 @@ attribute 'swift_throttle_delay',
           :default => "0",
           :format => {
               :category => '1.Global',
-              :order => 19
+              :order => 20
         }
