@@ -66,7 +66,18 @@ directory '/etc/presto' do
   recursive true
 end
 
-template '/etc/presto/node.properties' do
+if node['memory']['total'].to_i < 7000000
+    puts "***FAULT:FATAL=The compute does not have enough memory.  Must be at least 7 GB"
+    e = Exception.new("no backtrace")
+    e.set_backtrace("")
+    raise e
+else
+    mem = ((node['memory']['total'].to_i - 5500000) / 1000000).round.to_s + 'G'
+end
+
+Chef::Log.info("Allocating #{mem} to Presto")
+
+template node_prop_file do
     source 'node.properties.erb'
     owner 'presto'
     group 'presto'
@@ -79,5 +90,13 @@ template '/etc/presto/node.properties' do
         :query_max_memory_per_node => node.presto.query_max_memory_per_node,
     })
 end
+
+template '/etc/presto/jvm.config' do
+    source 'jvm.config.erb'
+    owner 'presto'
+    group 'presto'
+    mode '0755'
+    variables ({
+        :presto_mem => mem,
     })
 end
