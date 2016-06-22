@@ -194,7 +194,8 @@ resource 'java',
              :help => 'Java Programming Language Environment'
          },
          :attributes => {
-             'flavor' => 'oracle'
+             'flavor' => 'oracle',
+             'jdk' => 'server-jre'
          }
 
 # depends_on
