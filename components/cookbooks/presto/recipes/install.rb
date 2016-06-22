@@ -14,6 +14,23 @@ install_url = node.presto.presto_rpm_install_url.gsub('$version', node.presto.ve
 
 Chef::Log.info("Installing Presto with #{install_url}")
 
+node_id = SecureRandom.uuid
+
+node_prop_file = '/etc/presto/node.properties'
+
+if File.file?(node_prop_file)
+    File.open(node_prop_file, "r") do |file_handle|
+      file_handle.each_line do |line|
+        if line =~ /node.id/ then
+            node_id = line.split("=")[1].gsub(/\n/, "")
+            Chef::Log.info("Reusing node id of #{node_id}")
+        end
+      end
+    end
+end
+
+include_recipe "presto::delete"
+
 ruby_block 'Install Presto RPM' do
     block do
         Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
