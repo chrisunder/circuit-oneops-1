@@ -56,7 +56,11 @@ template '/etc/presto/node.properties' do
     mode '0755'
     variables ({
         :environment => node.workorder.payLoad.Environment[0].ciName,
-        :node_id => SecureRandom.uuid,
-        :data_directory_dir => node.presto.data_directory_dir
+        :node_id => node_id,
+        :data_directory_dir => node.presto.data_directory_dir,
+        :query_max_memory => node.presto.query_max_memory,
+        :query_max_memory_per_node => node.presto.query_max_memory_per_node,
+    })
+end
     })
 end

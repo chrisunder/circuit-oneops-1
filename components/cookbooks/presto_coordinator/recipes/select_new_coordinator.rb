@@ -58,8 +58,6 @@ template '/etc/presto/config.properties' do
     variables ({
         :coordinator => coordinator,
         :port => '8080',
-        :query_max_memory => node.presto_coordinator.query_max_memory,
-        :query_max_memory_per_node => node.presto_coordinator.query_max_memory_per_node,
         :coordinator_fqdn => coordinator_fqdn
     })
 end

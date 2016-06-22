@@ -42,6 +42,24 @@ attribute 'presto_rpm_install_url',
             :order  => 3
         }
 
+attribute 'query_max_memory',
+          :description => 'Max Query Memory',
+          :default => '60GB',
+          :format => {
+              :help => 'The maximum amount of distributed memory that a query may use',
+              :category => '1.Global',
+              :order => 4
+          }
+
+attribute 'query_max_memory_per_node',
+          :description => 'Max Query Memory Per Node',
+          :default => '10GB',
+          :format => {
+              :help => 'The maximum amount of memory that a query may use on any one machine',
+              :category => '1.Global',
+              :order => 5
+          }
+
 recipe 'status', 'Presto Status'
 recipe 'start', 'Start Presto'
 recipe 'stop', 'Stop Presto'
