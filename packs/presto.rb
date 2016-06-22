@@ -195,7 +195,7 @@ resource 'java',
          },
          :attributes => {
              'flavor' => 'oracle',
-             'jdk' => 'server-jre'
+             'jrejdk' => 'server-jre'
          }
 
 # depends_on
