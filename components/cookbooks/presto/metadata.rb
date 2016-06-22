@@ -16,7 +16,7 @@ grouping 'default',
 attribute 'version',
           :description => 'Version',
           :required => 'required',
-          :default  => '0.148.SNAPSHOT-1.x86_64',
+          :default  => '0.149.SNAPSHOT-1.x86_64',
           :format  => {
               :important  => true,
               :help  => 'Version of Presto',
